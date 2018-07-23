@@ -27,6 +27,8 @@ int startingValue; // starting value of the noise level input
 
 int refresh;
 
+
+
 void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -39,27 +41,29 @@ void setup() {
 
   startingValue = 100;
   int refresh = 0; //refresh
+
+  pinMode(2, INPUT_PULLUP);
 }
 
 void loop()
 {
   if (refresh == 10) {
-  refresh = 0;
- }
+    refresh = 0;
+  }
   // when characters arrive over the serial port...
- /* if (Serial.available())
-  {
-    // wait a bit for the entire message to arrive
-    delay(100);
-    // clear the screen
-    lcd.clear();
-    // read all the available characters
-    while (Serial.available() > 0)
+  /* if (Serial.available())
     {
-      // display each character to the LCD
-      lcd.write(Serial.read());
-    }
-  }*/
+     // wait a bit for the entire message to arrive
+     delay(100);
+     // clear the screen
+     lcd.clear();
+     // read all the available characters
+     while (Serial.available() > 0)
+     {
+       // display each character to the LCD
+       lcd.write(Serial.read());
+     }
+    }*/
   t = analogRead(A2);
   Serial.println(t);
   //String space = "  ";
@@ -69,10 +73,14 @@ void loop()
     temp = String(t);
     // Serial.println(temp);
     lcd.print("Noise Level:" + temp);
-   
-    lcd.setCursor(0,1);
-    lcd.print("SHUT UP!");
-    
+
+    int buttonVal = digitalRead(2);
+    if (buttonVal == LOW) {
+      lcd.setCursor(0, 1);
+      lcd.print("SHUT UP!");
+    }
+
+
     if (t <= 350) {
       lcd.setRGB(0, 255, 0);
     } else if (t > 350 && t <= 450) {
@@ -80,11 +88,11 @@ void loop()
     } else if (t > 450) {
       lcd.setRGB(255, 0, 0);
     }
-lcd.display();
+    lcd.display();
     setLEDs(t);
-}
-  refresh = refresh+1;
-  
+  }
+  refresh = refresh + 1;
+
   delay(30);
 
 
